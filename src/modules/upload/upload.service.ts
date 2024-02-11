@@ -46,6 +46,54 @@ export class UploadService {
   }
 
 
+  async getNumberOfWords() {
+    const count = await this._textAnalysisService.getNumberOfWordsFromFile();
+
+    return {
+      count: count,
+      message: 'Number of words'
+    }
+
+  }
+
+  async getNumberOfCharacters() {
+    const count = await this._textAnalysisService.getNumberOfCharactersFromFile();
+
+    return {
+      count: count,
+      message: 'Number of characters'
+    }
+  }
+
+  async getNumberOfParagraphs() {
+    const count = await this._textAnalysisService.getNumberOfParagraphsFromFile();
+
+    return {
+      count: count,
+      message: 'Number of paragraphs'
+    }
+
+  }
+
+  async getNumberOfSentences() {
+    const count = await this._textAnalysisService.getNumberOfSentencesFromFile();
+
+    return {
+      count: count,
+      message: 'Number of sentences'
+    }
+
+  }
+
+  async getLongestWordByParagraph() {
+    const word = await this._textAnalysisService.getLongestWordByParagraphFromFile();
+
+    return {
+      word: word,
+      message: 'Longest word by paragraph'
+    }
+  }
+
 
 
 

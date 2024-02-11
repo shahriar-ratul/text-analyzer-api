@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as fs from "fs";
 import { Upload } from '@prisma/client';
 import { getUrl } from '@/common/helpers/GenerateHelpers';
+import * as path from 'path';
 
 @Injectable()
 export class TextAnalysisService {
@@ -114,6 +115,59 @@ export class TextAnalysisService {
       return currentWord.length > longest.length ? currentWord : longest;
     }, "");
     return longestWord;
+  }
+
+
+  async getNumberOfWordsFromFile() {
+    const filePath = path.join(process.cwd(), './public/sample.txt');
+
+    const text = fs.readFileSync(filePath, 'utf8');
+    const words = text.split(' ');
+    return words.length;
+  }
+
+  async getNumberOfCharactersFromFile() {
+    const filePath = path.join(process.cwd(), './public/sample.txt');
+
+    const text = fs.readFileSync(filePath, 'utf8');
+    return text.length;
+  }
+
+  async getNumberOfParagraphsFromFile() {
+    const filePath = path.join(process.cwd(), './public/sample.txt');
+
+    const text = fs.readFileSync(filePath, 'utf8');
+    const paragraphs = text.split('\n');
+    return paragraphs.length - 1;
+  }
+
+  async getNumberOfSentencesFromFile() {
+
+    const filePath = path.join(process.cwd(), './public/sample.txt');
+
+    const text = fs.readFileSync(filePath, 'utf8');
+    const sentences = text.split('.');
+    return sentences.length - 1;
+  }
+
+  async getLongestWordByParagraphFromFile() {
+    const filePath = path.join(process.cwd(), './public/sample.txt');
+
+    const text = fs.readFileSync(filePath, 'utf8');
+    const paragraphs = text.split('\n');
+    let longestWordList = [];
+    let longestWord = '';
+    paragraphs.forEach((paragraph) => {
+      if (paragraph.length === 0) {
+        return;
+      }
+      const words = paragraph.split(' ');
+      longestWord = words.reduce(function (longest, currentWord) {
+        return currentWord.length > longest.length ? currentWord : longest;
+      }, "");
+      longestWordList.push(longestWord);
+    });
+    return longestWordList;
   }
 
 

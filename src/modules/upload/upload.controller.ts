@@ -48,6 +48,33 @@ export class UploadController {
     return this._uploadService.create(file);
   }
 
+
+
+  @Get("/get-number-of-words")
+  async getNumberOfWords() {
+    return this._uploadService.getNumberOfWords();
+  }
+
+  @Get("/get-number-of-characters")
+  async getNumberOfCharacters() {
+    return this._uploadService.getNumberOfCharacters();
+  }
+
+  @Get("/get-number-of-sentences")
+  async getNumberOfSentences() {
+    return this._uploadService.getNumberOfSentences();
+  }
+
+
+  @Get("/get-number-of-paragraphs")
+  async getNumberOfParagraphs() {
+    return this._uploadService.getNumberOfParagraphs();
+  }
+
+  @Get("/longest-word")
+  async getLongestWordByParagraph() {
+    return this._uploadService.getLongestWordByParagraph();
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this._uploadService.findOne(+id);
@@ -55,7 +82,6 @@ export class UploadController {
 
 
   private async fileValidation(file: Express.Multer.File) {
-
     return new Promise((resolve) => {
       if (!file) {
         throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
@@ -66,8 +92,8 @@ export class UploadController {
       }
       resolve(true);
     });
-
   }
+
 
 
 }

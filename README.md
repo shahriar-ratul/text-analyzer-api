@@ -28,8 +28,16 @@
 
 ## Installation
 
+In this Project used postgresql as database create a new database on your machine update .env as your config
+project has setup swagger to show api list it shows on running port "/docs"
+
+```
+http://localhost:4000/docs
+```
+
 ```bash
-$ yarn install
+ yarn install
+ cp .env.example .env
 ```
 
 ## Running the app

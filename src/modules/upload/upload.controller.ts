@@ -1,34 +1,73 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Param, UseInterceptors, UploadedFile, HttpException, HttpStatus } from '@nestjs/common';
 import { UploadService } from './upload.service';
-import { CreateUploadDto } from './dto/create-upload.dto';
-import { UpdateUploadDto } from './dto/update-upload.dto';
+import { ApiTags } from '@nestjs/swagger';
+import { diskStorage } from 'multer';
+import * as path from "path";
+import { FileInterceptor } from '@nestjs/platform-express';
 
-@Controller('upload')
+
+export const storage = {
+  storage: diskStorage({
+    destination: "./public/uploads/",
+    filename: (req, file, cb) => {
+
+      if (!file) {
+        return;
+      }
+
+      if (file.mimetype !== 'text/plain') {
+        throw new HttpException('Invalid File type only .txt allowed', HttpStatus.BAD_REQUEST);
+      }
+
+      const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+      const extension: string = path.parse(file.originalname || "").ext;
+      const filename: string = `${uniqueSuffix}${extension}`;
+      cb(null, filename);
+    },
+  }),
+};
+
+
+@ApiTags('uploads')
+@Controller('uploads')
 export class UploadController {
-  constructor(private readonly uploadService: UploadService) {}
+  constructor(private readonly _uploadService: UploadService) { }
 
-  @Post()
-  create(@Body() createUploadDto: CreateUploadDto) {
-    return this.uploadService.create(createUploadDto);
-  }
 
   @Get()
   findAll() {
-    return this.uploadService.findAll();
+    return this._uploadService.findAll();
+  }
+
+  @Post()
+  @UseInterceptors(FileInterceptor("file", storage))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    // check if file is valid
+    await this.fileValidation(file);
+    // console.log(file);
+    return this._uploadService.create(file);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.uploadService.findOne(+id);
+    return this._uploadService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUploadDto: UpdateUploadDto) {
-    return this.uploadService.update(+id, updateUploadDto);
+
+  private async fileValidation(file: Express.Multer.File) {
+
+    return new Promise((resolve) => {
+      if (!file) {
+        throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
+      }
+
+      if (file.mimetype !== 'text/plain') {
+        throw new HttpException('Invalid File type only .txt allowed', HttpStatus.BAD_REQUEST);
+      }
+      resolve(true);
+    });
+
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.uploadService.remove(+id);
-  }
+
 }

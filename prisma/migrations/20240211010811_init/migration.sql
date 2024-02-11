@@ -16,6 +16,11 @@ CREATE TABLE "TextAnalysis" (
     "id" SERIAL NOT NULL,
     "text" TEXT NOT NULL,
     "uploadId" INTEGER,
+    "numberOfWords" INTEGER DEFAULT 0,
+    "numberOfCharacters" INTEGER DEFAULT 0,
+    "numberOfSentences" INTEGER DEFAULT 0,
+    "numberOfParagraphs" INTEGER DEFAULT 0,
+    "longestWord" TEXT DEFAULT '',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 

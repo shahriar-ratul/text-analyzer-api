@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUploadDto } from './dto/create-upload.dto';
-import { UpdateUploadDto } from './dto/update-upload.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { TextAnalysisService } from '../text-analysis/text-analysis.service';
 
 @Injectable()
 export class UploadService {
 
   constructor(
     private _prisma: PrismaService,
+    private _textAnalysisService: TextAnalysisService,
   ) { }
 
   findAll() {
@@ -15,8 +15,29 @@ export class UploadService {
   }
 
 
-  create(createUploadDto: CreateUploadDto) {
-    return 'This action adds a new upload';
+  async create(file: Express.Multer.File) {
+
+    const upload = await this._prisma.upload.create({
+      data: {
+        filename: file.filename,
+        mimetype: file.mimetype,
+        path: file.path,
+        size: file.size,
+      }
+    });
+
+    // read text file and store in database
+    if (file.mimetype !== 'text/plain') {
+      throw new Error('Invalid File type only .txt allowed');
+    }
+
+    const text = await this._textAnalysisService.uploadDataFile(upload.id);
+
+    return {
+      item: text,
+      message: 'File uploaded successfully'
+    }
+
   }
 
 
@@ -24,11 +45,9 @@ export class UploadService {
     return `This action returns a #${id} upload`;
   }
 
-  update(id: number, updateUploadDto: UpdateUploadDto) {
-    return `This action updates a #${id} upload`;
-  }
 
-  remove(id: number) {
-    return `This action removes a #${id} upload`;
-  }
+
+
+
+
 }

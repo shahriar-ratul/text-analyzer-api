@@ -30,6 +30,11 @@ model TextAnalysis {
   text      String
   uploadId  Int? @unique
   upload    Upload? @relation(fields: [uploadId], references: [id])
+  numberOfWords Int? @default(0)
+  numberOfCharacters Int? @default(0)
+  numberOfSentences Int? @default(0)
+  numberOfParagraphs Int? @default(0)
+  longestWord String? @default("")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

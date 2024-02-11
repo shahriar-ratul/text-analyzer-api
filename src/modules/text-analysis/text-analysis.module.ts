@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { TextAnalysisService } from './text-analysis.service';
-import { TextAnalysisController } from './text-analysis.controller';
 
 @Module({
-  controllers: [TextAnalysisController],
+  controllers: [],
   providers: [TextAnalysisService],
+  exports: [TextAnalysisService],
 })
 export class TextAnalysisModule {}
